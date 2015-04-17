@@ -2,7 +2,11 @@
   "name": "ff-gorilla-grid",
   "author": "Campudus",
   "version": "0.0.0",
-  "keywords": ["fun friday", "responsive", "grid"],
+  "keywords": [
+    "fun friday",
+    "responsive",
+    "grid"
+  ],
   "scripts": {
     "build": "gulp",
     "clean": "gulp clean",
