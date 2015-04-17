@@ -23,39 +23,45 @@ gulp.task('test', ['build'], test);
 gulp.task('build', ['sass', 'assets', 'scripts']);
 gulp.task('default', ['build']);
 
+var components = ['gridlayout', 'image-loader'];
+
 function sassCompile() {
-  return gulp.src('src/main/scss/main.scss')
-    .pipe(plumber({
-      errorHandler : function (error) {
-        gutil.log(error.message);
-        this.emit('end');
-      }
-    }))
-    .pipe(compass({
-      project : Path.join(__dirname),
-      css : 'out/css',
-      sass : 'src/main/scss',
-      image : 'src/main/img'
-    }))
-    .pipe(minifyCss())
-    .pipe(gulp.dest('out/css'));
+  return components.map(function (name) {
+    return gulp.src('src/main/' + name + '/scss/main.scss')
+      .pipe(plumber({
+        errorHandler : function (error) {
+          gutil.log(error.message);
+          this.emit('end');
+        }
+      }))
+      .pipe(compass({
+        project : Path.join(__dirname),
+        css : 'out/' + name + '/css',
+        sass : 'src/main/' + name + '/scss',
+        image : 'src/main/' + name + '/img'
+      }))
+      .pipe(minifyCss())
+      .pipe(gulp.dest('out/' + name + '/css/'));
+  });
 }
 
 function assetCopy() {
-  return gulp.src(['src/main/**', '!src/main/js/**', '!src/main/scss', '!src/main/scss/**'])
+  return gulp.src(['src/main/**', '!src/main/*/js/**', '!src/main/js/**', '!src/main/*/scss', '!src/main/*/scss/**'])
     .pipe(gulp.dest('out/'));
 }
 
 function scriptCompile() {
-  return browserify('./src/main/js/app.js')
-    .transform('browserify-shim')
-    .bundle()
-    .on('error', function (err) {
-      gutil.log('error', err);
-      this.emit('end');
-    })
-    .pipe(source('app.js'))
-    .pipe(gulp.dest('out/js/'));
+  return components.map(function (name) {
+    return browserify('./src/main/' + name + '/js/app.js')
+      .transform('browserify-shim')
+      .bundle()
+      .on('error', function (err) {
+        gutil.log('error', err);
+        this.emit('end');
+      })
+      .pipe(source('app.js'))
+      .pipe(gulp.dest('out/' + name + '/js/'))
+  });
 }
 
 function test() {
@@ -77,7 +83,6 @@ function server() {
   });
 
   gulp.watch(['src/main/**', 'src/main/js/**', 'src/main/scss/**/*.scss'], {}, ['reloader']);
-  gulp.watch(['src/flash/**'], {}, ['reloadFlash']);
 
   gulp.src('src/test/**/*Spec.js').pipe(karma({
     configFile : 'karma.conf.js',
