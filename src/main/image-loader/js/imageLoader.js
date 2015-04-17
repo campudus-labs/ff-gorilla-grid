@@ -29,26 +29,31 @@ $.fn.progressiveZoom = function (options) {
     var xmlHTTP = new XMLHttpRequest();
     xmlHTTP.open('GET', fullSizeImageUrl, true);
     xmlHTTP.responseType = 'arraybuffer';
-    xmlHTTP.onload = function () {
-      var blob = new Blob([this.response]);
-      $img.attr('src', window.URL.createObjectURL(blob));
-      $img.css({opacity : 1});
-      $progressBar.addClass(settings.doneLoadingClass);
-      $progressBar.css({opacity : 0});
+    xmlHTTP.onload = function (e) {
+      console.log('onload', e);
+      if (e.target.status === 200) {
+        var blob = new Blob([this.response]);
+        $img.attr('src', window.URL.createObjectURL(blob));
+        $img.css({opacity : 1});
+        $progressBar.addClass(settings.doneLoadingClass);
+        $progressBar.css({opacity : 0});
+      } else {
+        console.log('error loading');
+        $progressBar.addClass(settings.errorLoadingClass);
+      }
     };
     xmlHTTP.onprogress = function (e) {
+      console.log('progress', e);
       if (e.lengthComputable) {
         $progressBar.width((e.loaded / e.total * 100) + '%');
       }
     };
     xmlHTTP.onloadstart = function () {
-      setTimeout(function(){
+      console.log('load start');
+      setTimeout(function () {
         $wrapper.css({width : '100%'});
       }, 1);
       $wrapper.append($progressBar);
-    };
-    xmlHTTP.onerror = function () {
-      $progressBar.addClass(settings.errorLoadingClass);
     };
     console.log('send http req');
     xmlHTTP.send();
