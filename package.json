@@ -15,7 +15,7 @@
     "url": "https://github.com/campudus/ff-gorilla-grid.git"
   },
   "browser": {
-    "jQuery": "./src/js/jquery-1.11.2.js"
+    "jQuery": "./src/main/js/jquery-2.1.3.js"
   },
   "browserify-shim": {
     "jQuery": {
