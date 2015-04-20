@@ -9,6 +9,7 @@ var browserSync = require('browser-sync');
 var reload = browserSync.reload;
 var plumber = require('gulp-plumber');
 var karma = require('gulp-karma');
+var ghPages = require('gulp-gh-pages');
 var source = require('vinyl-source-stream');
 
 gulp.task('sass', sassCompile);
@@ -20,10 +21,17 @@ gulp.task('reloader', ['build'], reload);
 gulp.task('dev', ['build'], server);
 gulp.task('test', ['build'], test);
 
+gulp.task('deploy', ['build'], deployToGhPages);
+
 gulp.task('build', ['sass', 'assets', 'scripts']);
 gulp.task('default', ['build']);
 
 var components = ['gridlayout', 'image-loader'];
+
+function deployToGhPages() {
+  return gulp.src('./out/**/*')
+    .pipe(ghPages());
+}
 
 function sassCompile() {
   return components.map(function (name) {
