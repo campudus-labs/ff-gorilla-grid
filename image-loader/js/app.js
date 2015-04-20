@@ -1,3 +1,78 @@
+(function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+require('./imageLoader');
+
+},{"./imageLoader":2}],2:[function(require,module,exports){
+var $ = require('jQuery');
+
+$.fn.progressiveZoom = function (options) {
+  var settings = $.extend({
+    className : 'progressive-zoom-wrap',
+    progressClass : 'progressive-zoom-progress',
+    errorLoadingClass : 'error',
+    doneLoadingClass : 'done'
+  }, options);
+
+  if (this.filter('img').length === 0) {
+    return this.find('img').each(createBoxAroundImage)
+  }
+  return this.filter('img').each(createBoxAroundImage);
+
+  function createBoxAroundImage() {
+    var $this = $(this);
+    var fullSizeImageUrl = $this.attr('data-full-size');
+    var $wrapper = $('<div>').addClass(settings.className);
+    var $thumb = $this.clone().addClass('thumb');
+    var $progressBar = $('<div>').addClass(settings.progressClass);
+    var $img = $('<img>').addClass('full');
+
+    $wrapper.css({width : $this.width()});
+    $wrapper.append($thumb);
+    $wrapper.append($img);
+    $(this).replaceWith($wrapper);
+
+    var xmlHTTP = new XMLHttpRequest();
+    xmlHTTP.open('GET', fullSizeImageUrl, true);
+    xmlHTTP.responseType = 'arraybuffer';
+    xmlHTTP.onload = function (e) {
+      console.log('onload', e);
+      if (e.target.status === 200) {
+        var blob = new Blob([this.response]);
+        $img.attr('src', window.URL.createObjectURL(blob));
+        $img.css({opacity : 1});
+        $progressBar.addClass(settings.doneLoadingClass);
+        $progressBar.css({opacity : 0});
+      } else {
+        console.log('error loading');
+        $progressBar.addClass(settings.errorLoadingClass);
+      }
+    };
+    xmlHTTP.onprogress = function (e) {
+      console.log('progress', e);
+      if (e.lengthComputable) {
+        $progressBar.width((e.loaded / e.total * 100) + '%');
+      }
+    };
+    xmlHTTP.onloadstart = function () {
+      console.log('load start');
+      setTimeout(function () {
+        $wrapper.css({width : '100%'});
+      }, 1);
+      $wrapper.append($progressBar);
+    };
+    console.log('send http req');
+    xmlHTTP.send();
+  }
+};
+
+$('#thumb-test2').click(function () {
+  $(this).progressiveZoom();
+});
+
+console.log('started');
+
+},{"jQuery":3}],3:[function(require,module,exports){
+(function (global){
+; var __browserify_shim_require__=require;(function browserifyShim(module, exports, require, define, browserify_shim__define__module__export__) {
 /*!
  * jQuery JavaScript Library v2.1.3
  * http://jquery.com/
@@ -9203,3 +9278,10 @@ if ( typeof noGlobal === strundefined ) {
 return jQuery;
 
 }));
+
+; browserify_shim__define__module__export__(typeof $ != "undefined" ? $ : window.$);
+
+}).call(global, undefined, undefined, undefined, undefined, function defineExport(ex) { module.exports = ex; });
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{}]},{},[1]);
