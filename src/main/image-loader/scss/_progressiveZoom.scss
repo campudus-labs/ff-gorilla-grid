@@ -1,9 +1,10 @@
 @import "compass/css3/transition";
 
+$transition-speed-to-fullscreen: 3000ms;
+
 .progressive-zoom-wrap {
   position: absolute;
-  @include transition(all 1500ms ease-out);
-  width: 0;
+  @include transition(all $transition-speed-to-fullscreen ease-out);
   height: auto;
 
   img {
@@ -11,12 +12,10 @@
     width: 100%;
     height: auto;
 
-    &.thumb {
-    }
-
     &.full {
-      @include transition(all 1500ms ease-out);
+      @include transition(all ($transition-speed-to-fullscreen) ease-out);
       opacity: 0;
+
     }
   }
 
@@ -27,14 +26,20 @@
     @include transition(all 100ms ease-out);
     background-color: #0f0;
     border-bottom: 1px solid #000;
+  }
 
-    &.done {
+  &.done {
+    .full {
+      opacity: 1;
+    }
+
+    .progressive-zoom-progress {
       @include transition(all 2s ease-out);
       opacity: 0;
     }
+  }
 
-    &.error {
-      background-color: #f00;
-    }
+  &.error .progressive-zoom-progress {
+    background-color: #f00;
   }
 }

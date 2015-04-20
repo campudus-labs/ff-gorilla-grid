@@ -24,7 +24,14 @@ $.fn.progressiveZoom = function (options) {
     $wrapper.css({width : $this.width()});
     $wrapper.append($thumb);
     $wrapper.append($img);
-    $(this).replaceWith($wrapper);
+    $this.replaceWith($wrapper);
+
+    $wrapper.click(function() {
+      $wrapper.replaceWith($this);
+      $this.click(function() {
+        $(this).progressiveZoom();
+      })
+    });
 
     var xmlHTTP = new XMLHttpRequest();
     xmlHTTP.open('GET', fullSizeImageUrl, true);
@@ -34,12 +41,10 @@ $.fn.progressiveZoom = function (options) {
       if (e.target.status === 200) {
         var blob = new Blob([this.response]);
         $img.attr('src', window.URL.createObjectURL(blob));
-        $img.css({opacity : 1});
-        $progressBar.addClass(settings.doneLoadingClass);
-        $progressBar.css({opacity : 0});
+        $wrapper.addClass(settings.doneLoadingClass);
       } else {
         console.log('error loading');
-        $progressBar.addClass(settings.errorLoadingClass);
+        $wrapper.addClass(settings.errorLoadingClass);
       }
     };
     xmlHTTP.onprogress = function (e) {
