@@ -1,37 +1,65 @@
 @import 'normalize';
 
-$paddingSize:50px;
-$colorPrimary:#63d491;
+$paddingSize: 50px;
+$colorPrimary: #63d491;
+$fontFamily: 'Lato', sans-serif;
 
-body,html{
+body, html {
   position: relative;
-  height:100%;
+  height: 100%;
+  font-family: $fontFamily;
 }
 
-header, footer{
+h1, h2, h3, h4, h5, h6 {
+  color: $colorPrimary;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+header, footer {
   height: $paddingSize;
   overflow: hidden;
-  width:100%;
-  z-index:3;
-  background-color:#fff;
+  width: 100%;
+  z-index: 3;
+  background-color: #fff;
   position: fixed;
-  line-height:$paddingSize;
-  padding:0 $paddingSize;
+  line-height: $paddingSize;
+  padding: 0 $paddingSize;
+  text-transform: uppercase;
 
-  *{
-    margin:0;
-    padding:0;
+  * {
+    margin: 0;
+    padding: 0;
+    font-weight: 600;
   }
 
 }
 
-footer{
-  bottom:0px;
+footer {
+  bottom: 0px;
 }
 
-#wrapper{
+#wrapper {
   margin: 0 $paddingSize;
-  padding-bottom:$paddingSize;
-  padding-top:$paddingSize;
-  background-color:#dfdfdf;
+  margin-bottom: $paddingSize;
+  padding-top: $paddingSize;
+  background-color: #dfdfdf;
+}
+
+#gorillaGrid {
+  section {
+    width: 33.33333%;
+    height: 50%;
+
+    img {
+      width: 100%;
+      height: auto;
+      position: absolute;
+      top: 0px;
+      left: 0px;
+    }
+  }
 }
